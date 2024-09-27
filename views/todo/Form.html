@@ -1,0 +1,50 @@
+<template>
+    <form onsubmit="formHandler" class="is-flex is-gap-2 mb-4">
+        <input class="input" placeholder="To Do...." type="text" value="{{ inputValue }}" oninput="inputHandler">
+        <button class="button is-primary">
+            <i class="fa-solid fa-plus"></i>
+        </button>
+        <button class="button is-primary" type="button" onclick="Trash.open">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+        </button>
+    </form>
+</template>
+
+<script>
+    const state = useProxy({
+        inputValue: ""
+    })
+
+    defEvents({
+        inputHandler(e) {
+            state.inputValue = this.value
+        },
+        formHandler(e) {
+            e.preventDefault()
+            if (state.inputValue.length == 0) {
+                return this.querySelector(".input").focus()
+            }
+
+            const Notes = useSignal("Notes")
+            Notes.data = [{
+                id: randomString(10),
+                value: state.inputValue,
+                checked: false
+            }, ...Notes.data]
+
+            state.inputValue = ''
+        }
+    })
+
+    function randomString(length) {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+        let result = ''
+        const charactersLength = characters.length
+
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength))
+        }
+
+        return result
+    }
+</script>

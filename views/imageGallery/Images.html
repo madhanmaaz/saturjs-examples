@@ -1,0 +1,94 @@
+<template>
+    <main class="p-4">
+        {{for obj, index in data }}
+        <figure class="image {{ obj.load ? '' : 'is-skeleton' }}">
+            <img src="{{ obj.url }}" onclick="openImg(index)" onload="loadSuccess(obj.id)" loading="lazy">
+        </figure>
+        {{/}}
+    </main>
+</template>
+
+<script>
+    const state = useProxy({
+        data: []
+    })
+
+    const loadMoreContent = () => {
+        const arr = imageUrls.slice(0, state.data.length + dataLen)
+        state.data = arr
+    }
+
+    defEvents({
+        loadSuccess(e, id) {
+            state.data = state.data.map(obj => {
+                if (obj.id == id) {
+                    obj.load = true
+                }
+                return obj
+            })
+        },
+        openImg(e, imageIndex) {
+            currentIndex = Number(imageIndex)
+            useSignal("Overlay").image = state.data[imageIndex].url
+        }
+    })
+
+    useWatch({
+        data() {
+            localStorage.setItem("imageUrls", JSON.stringify(imageUrls))
+        }
+    })
+
+    function handleScroll(event) {
+        const { scrollTop, scrollHeight, clientHeight } = event.target.scrollingElement || event.target;
+        if (scrollHeight - scrollTop <= clientHeight) {
+            loadMoreContent()
+        }
+    }
+
+    loadMoreContent()
+    const ImagesEle = document.querySelector(`[element="Images"]`)
+    ImagesEle.addEventListener('scroll', handleScroll)
+</script>
+
+<style>
+    [css="Images"] {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        display: grid;
+        gap: .5rem;
+        grid-template-columns: repeat(auto-fit, minmax(370px, 1fr));
+        justify-items: center;
+    }
+
+    [css="Images"] figure {
+        height: 100%;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    [css="Images"] figure:hover {
+        transform: scale(0.99);
+    }
+
+    [css="Images"] figure img {
+        object-fit: cover;
+        height: 100%;
+        border-radius: 8px;
+    }
+
+    @media (max-width: 768px) {
+        [css="Images"] {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 480px) {
+        [css="Images"] {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

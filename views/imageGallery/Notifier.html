@@ -1,0 +1,48 @@
+<template>
+    <div class="message {{ type }} {{ message.length != 0 && 'active' }}">
+        <div class="message-body p-3">
+            {{message}}
+            <button class="delete" onclick="close"></button>
+        </div>
+    </div>
+</template>
+
+<script>
+    const state = useProxy({
+        message: '',
+        type: '',
+        duration: 3
+    })
+
+    defEvents({
+        close() {
+            clearTimeout(__interval)
+            state.message = ''
+        }
+    })
+
+    let __interval
+    useWatch({
+        message(oldValue) {
+            if (oldValue == '') {
+                clearTimeout(__interval)
+                __interval = setTimeout(() => {
+                    state.message = ''
+                }, state.duration * 1000)
+            }
+        }
+    })
+</script>
+
+<style>
+    [css="Notifier"] {
+        position: fixed;
+        bottom: 2rem;
+        right: -100%;
+        transition: all .5s ease-in-out;
+    }
+
+    [css="Notifier"].active {
+        right: 2rem;
+    }
+</style>

@@ -1,0 +1,58 @@
+<template>
+    <div id="notes">
+        {{if data.length == 0 }}
+        <h1 class="title is-5 has-text-centered">Nothing to do...</h1>
+        {{/}}
+
+        {{for obj in data }}
+        <div class="p-1 is-flex is-justify-content-space-between">
+            <input type="checkbox" oninput="completed(obj.id)" checked="{{ obj.checked }}">
+            <p class="subtitle m-0" style="text-decoration: {{obj.checked ? 'line-through' : 'none' }}">
+                {{ obj.value }}
+            </p>
+            <button class="button is-small is-danger" onclick="deleteNote(obj.id)">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </div>
+        {{/}}
+    </div>
+</template>
+
+<script>
+    const state = useProxy({
+        data: []
+    })
+
+    state.data = JSON.parse(localStorage.getItem("data") || '[]')
+
+    defEvents({
+        completed(e, id) {
+            state.data = state.data.map(item =>
+                item.id === id ? { ...item, checked: this.checked } : item
+            )
+        },
+        deleteNote(e, id) {
+            const Trash = useSignal("Trash")
+            Trash({
+                deleted: [state.data.find(obj => obj.id == id), ...Trash.deleted]
+            }, false)
+
+            state.data = state.data.filter(obj => obj.id !== id)
+        },
+    })
+
+    useWatch({
+        data() {
+            localStorage.setItem("data", JSON.stringify(state.data))
+        }
+    })
+</script>
+
+<style>
+    #notes {
+        height: 100%;
+        overflow: hidden;
+        overflow-y: auto;
+        scrollbar-width: thin;
+    }
+</style>

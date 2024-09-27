@@ -1,0 +1,44 @@
+<template>
+    <form onsubmit="formHandler" class="is-flex is-gap-1 is-align-items-center">
+        <input class="input" type="url" required value="{{inputValue}}" oninput="inputHandler" placeholder="URL">
+        <input type="submit" class="button is-primary">
+    </form>
+</template>
+
+<script>
+    const state = useProxy({
+        inputValue: ""
+    })
+
+    defEvents({
+        inputHandler() {
+            state.inputValue = this.value
+        },
+        formHandler(e) {
+            e.preventDefault()
+            const Notifier = useSignal("Notifier")
+            if (imageUrls.find(obj => obj.url == state.inputValue)) {
+                Notifier({
+                    message: "Image already added.",
+                    type: "is-danger"
+                })
+                return state.inputValue = ""
+            }
+
+            const ImagesState = useSignal("Images")
+            const newImage = {
+                id: crypto.randomUUID(),
+                url: state.inputValue,
+                load: false
+            }
+
+            ImagesState.data = [newImage, ...ImagesState.data]
+            imageUrls.unshift(newImage)
+            state.inputValue = ""
+            Notifier({
+                message: "Image added successfully.",
+                type: "is-info"
+            })
+        }
+    })
+</script>
