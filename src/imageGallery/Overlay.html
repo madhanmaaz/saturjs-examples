@@ -1,15 +1,17 @@
 <template>
     <div class="img-overlay {{ image.length == 0 ? '' : 'active' }}">
         <button onclick="prevImage"><i class="fa-solid fa-chevron-left"></i></button>
+
         <figure class="{{ slide ? slide : '' }}">
             <img src="{{ image == null ? '' : image }}" class="{{ image.length == 0 ? '' : 'active' }}"
                 onclick="closeImg">
         </figure>
+
         <button onclick="nextImage"><i class="fa-solid fa-chevron-right"></i></button>
     </div>
 </template>
 <script>
-    const state = useProxy({
+    const state = defProxy({
         image: "",
         slide: "next"
     })

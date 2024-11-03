@@ -1,3 +1,19 @@
+<script server>
+    const http = require("http")
+    const isDev = process.env.NODE_ENV === "development"
+
+    async function defServer(err, req, res, next) {
+        const status = err.status || 500
+        const title = http.STATUS_CODES[status]
+
+        return {
+            status,
+            title,
+            err
+        }
+    }
+</script>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -79,7 +95,7 @@
             <p>{{ title }}</p>
         </div>
 
-        {{if dev }}
+        {{if (isDev) }}
         <div class="error">
             <div class="error-info">
                 <div class="name">{{err.name}}</div>
@@ -87,14 +103,9 @@
             </div>
             <pre class="stack">{{err.stack}}</pre>
         </div>
-        {{else if err.name === "SaturError"}}
-        <div class="error">
-            <div class="error-info">
-                <pre class="name">{{err.message}}</pre>
-            </div>
-        </div>
         {{/}}
     </div>
+
 </body>
 
 </html>

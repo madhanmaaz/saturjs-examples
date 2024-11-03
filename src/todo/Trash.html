@@ -10,7 +10,7 @@
         </div>
 
         <div class="deleted">
-            {{for obj in deleted}}
+            {{for (obj in deleted) }}
             <li class="p-2 mt-1 is-flex is-gap-1 has-background-black-bis">
                 <p class="is-fullwidth is-flex-grow-1">{{ obj.value }}</p>
                 <button class="button is-small is-success" onclick="revert(obj.id)">
@@ -26,14 +26,16 @@
 </template>
 
 <script>
-    const state = useProxy({
+    const state = defProxy({
         deleted: [],
         opened: false
     })
 
-    state({
-        deleted: JSON.parse(localStorage.getItem("deleted") || '[]')
-    }, false)
+    defLoad(() => {
+        state({
+            deleted: JSON.parse(localStorage.getItem("deleted") || '[]')
+        }, false)
+    })
 
     defEvents({
         open() {
@@ -49,7 +51,7 @@
         }
     })
 
-    useWatch({
+    defWatch({
         deleted() {
             localStorage.setItem("deleted", JSON.stringify(state.deleted))
         }

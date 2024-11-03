@@ -4,28 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo App</title>
+    <title>Counter App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.2/css/bulma.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
         html {
             overflow-y: auto;
         }
 
         body {
-            height: 100dvh;
-            display: flex;
-            flex-direction: column;
             color-scheme: dark;
+            display: grid;
+            place-content: center;
+            height: 100vh;
         }
     </style>
 </head>
 
 <body class="container p-4">
-    <h1 class="title">To Do App</h1>
-    {{@./Form()}}
-    {{@./Notes()}}
-    {{@./Trash()}}
+    <import src="./Counter.html" />
+
+    <div>
+        <h1 class="title">Counter App</h1>
+        {{ $$.Counter() }}
+    </div>
 </body>
 
 </html>

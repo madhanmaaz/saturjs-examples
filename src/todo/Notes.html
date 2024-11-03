@@ -1,12 +1,12 @@
 <template>
     <div id="notes">
-        {{if data.length == 0 }}
+        {{if (data.length == 0)}}
         <h1 class="title is-5 has-text-centered">Nothing to do...</h1>
         {{/}}
 
-        {{for obj in data }}
+        {{for (obj in data) }}
         <div class="p-1 is-flex is-justify-content-space-between">
-            <input type="checkbox" oninput="completed(obj.id)" checked="{{ obj.checked }}">
+            <input type="checkbox" oninput="completed(obj.id)" checked="obj.checked">
             <p class="subtitle m-0" style="text-decoration: {{obj.checked ? 'line-through' : 'none' }}">
                 {{ obj.value }}
             </p>
@@ -19,11 +19,9 @@
 </template>
 
 <script>
-    const state = useProxy({
+    const state = defProxy({
         data: []
     })
-
-    state.data = JSON.parse(localStorage.getItem("data") || '[]')
 
     defEvents({
         completed(e, id) {
@@ -41,10 +39,14 @@
         },
     })
 
-    useWatch({
+    defWatch({
         data() {
             localStorage.setItem("data", JSON.stringify(state.data))
         }
+    })
+
+    defLoad(() => {
+        state.data = JSON.parse(localStorage.getItem("data") || '[]')
     })
 </script>
 

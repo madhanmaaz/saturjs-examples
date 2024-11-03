@@ -1,5 +1,5 @@
 <template>
-    <div class="message {{ type }} {{ message.length != 0 && 'active' }}">
+    <div id="Notifier" class="message {{ type }} {{ message.length != 0 && 'active' }}">
         <div class="message-body p-3">
             {{message}}
             <button class="delete" onclick="close"></button>
@@ -8,7 +8,7 @@
 </template>
 
 <script>
-    const state = useProxy({
+    const state = defProxy({
         message: '',
         type: '',
         duration: 3
@@ -22,7 +22,7 @@
     })
 
     let __interval
-    useWatch({
+    defWatch({
         message(oldValue) {
             if (oldValue == '') {
                 clearTimeout(__interval)
@@ -35,14 +35,14 @@
 </script>
 
 <style>
-    [css="Notifier"] {
+    #Notifier {
         position: fixed;
         bottom: 2rem;
         right: -100%;
         transition: all .5s ease-in-out;
     }
 
-    [css="Notifier"].active {
+    #Notifier.active {
         right: 2rem;
     }
 </style>

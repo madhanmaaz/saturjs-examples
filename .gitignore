@@ -1,4 +1,5 @@
 # Logs
+.satur
 logs
 *.log
 npm-debug.log*
